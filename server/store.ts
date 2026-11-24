@@ -1,13 +1,16 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import {
+import type {
   BridgeConfig,
   BridgeStatePayload,
   PacketCapture,
   SyncLogEntry,
   UserProfile,
   WeighInRecord,
+} from '../src/shared/ariaProtocol.ts';
+import {
   bytesToHex,
   decodeAriaPacket,
   encodeAriaPacket,
@@ -27,7 +30,20 @@ interface PersistedBridgeStore {
   syncLogs: SyncLogEntry[];
 }
 
-const DATA_DIR = path.resolve(process.cwd(), 'data');
+function resolveWritableDataDir(): string {
+  const preferred = path.resolve(process.cwd(), 'data');
+  try {
+    fs.mkdirSync(preferred, { recursive: true });
+    fs.accessSync(preferred, fs.constants.W_OK);
+    return preferred;
+  } catch {
+    const fallback = path.resolve(os.tmpdir(), 'ariabridge-data');
+    fs.mkdirSync(fallback, { recursive: true });
+    return fallback;
+  }
+}
+
+const DATA_DIR = resolveWritableDataDir();
 const STORE_PATH = path.resolve(DATA_DIR, 'ariabridge-store.json');
 
 function sha256Hex(value: string): string {

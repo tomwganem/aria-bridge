@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import path from 'node:path';
-import { createServer as createViteServer } from 'vite';
 import {
   ARIA_PACKET_SIZE,
   buildAriaAckFrame,
@@ -528,6 +527,7 @@ async function startServer() {
 
   // Mount Vite middleware in development, static dist in production
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
