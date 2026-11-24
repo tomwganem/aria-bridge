@@ -1,0 +1,8 @@
+{
+  "name": "AriaBridge Lab",
+  "description": "Fitbit Aria Gen 1 Wi-Fi smart scale protocol dissector, local binary bridge, and Android Health Connect sync hub.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
